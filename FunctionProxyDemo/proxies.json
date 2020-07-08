@@ -10,17 +10,27 @@
     },
     "CountriesList": {
       "matchCondition": {
-        "route": "/api/eshop/utils/countries",
+        "route": "/api/utils/countries",
         "methods": [ "GET" ]
       },
-      "backendUri": "%ESHOP_UTILS_HOST%/api/GetCountries"
+      "backendUri": "%UTILS_HOST%/api/GetCountries"
     },
     "CountryByCode": {
       "matchCondition": {
-        "route": "/api/eshop/utils/countries/{code}", //using route parameter that can be passed to backend URL
+        "route": "/api/utils/countries/{code}", //using route parameter that can be passed to backend URL
+        "methods": [ "GET" ],
+      },
+      "backendUri": "%UTILS_HOST%/api/GetCountryByCode/{code}"
+    },
+    "ServerTime": {
+      "matchCondition": {
+        "route": "/api/utils/time",
         "methods": [ "GET" ]
       },
-      "backendUri": "%ESHOP_UTILS_HOST%/api/GetCountryByCode/{code}"
+      "requestOverrides": {
+        "backend.request.method": "POST"
+      },
+      "backendUri": "%UTILS_HOST%/api/GetCurrentTime"
     },
     //Creating a Mock API where backend is not implemented. Sending a static response using response overrides
     "PaymentStatus": {
