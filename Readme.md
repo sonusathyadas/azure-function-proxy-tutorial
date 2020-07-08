@@ -65,7 +65,7 @@ You can also create mock APIs for development and testing purposes using functio
 ## Creating and configuring Function Proxies using Azure Portal
 1) Open Azure Portal and create a new Function App.
 2) Open the Function App and select `Proxies` from the Functions section. Click on the Add button to create a new Proxy.
-    ![Portal1](images/portal1.png =400x)
+    ![Portal1](images/portal1.png)
 3) In the `New Proxy` dialog window, specify the name of the Proxy, Route Template, Http methods and the backend URL. Optionally you can specify the `Request override` and `Response override` configuration. Click `Create` to create the new proxy.
     ![Portal2](images/portal2.png)
 4) After the proxy is created you can click on the proxy name to see the details.
