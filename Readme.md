@@ -81,3 +81,81 @@ You can also create mock APIs for development and testing purposes using functio
     ![Portal5](images/portal5.png)
 7) Now, you can copy the proxy URL and test using a browser or any other tool like Postman.
 
+## Creating Function Proxy using Visual Studio
+1) To create function proxies in your Visual Studio  fucntion App project, you need to add `proxies.json` file in the project.
+2) You need to explicitly add the following lines to the `*.csproj` file to include the `proxies.json` in the package file while publishing the project to Azure.
+    ```
+    <None Update="proxies.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    ```
+3) In the `proxies.json` file you can define the list of proxies. Find the sample proxy configurations below.
+    ```
+    {
+      "$schema": "http://json.schemastore.org/proxies",
+      "proxies": {
+        "PlaceOrder": {
+          "matchCondition": {
+            "methods": [ "POST" ],
+            "route": "/api/eshop/order"
+          },
+          "backendUri": "%ESHOP_ORDERS_HOST%/api/PostOrder"
+        },
+        "CountriesList": {
+          "matchCondition": {
+            "route": "/api/utils/countries",
+            "methods": [ "GET" ]
+          },
+          "backendUri": "%UTILS_HOST%/api/GetCountries"
+        },
+        "CountryByCode": {
+          "matchCondition": {
+            "route": "/api/utils/countries/{code}", 
+            "methods": [ "GET" ],
+          },
+          "backendUri": "%UTILS_HOST%/api/GetCountryByCode/{code}"
+        },
+        "ServerTime": {
+          "matchCondition": {
+            "route": "/api/utils/time",
+            "methods": [ "GET" ]
+          },
+          "requestOverrides": {
+            "backend.request.method": "POST"
+          },
+          "backendUri": "%UTILS_HOST%/api/GetCurrentTime"
+        },
+        "PaymentStatus": {
+          "matchCondition": {
+            "route": "/api/eshop/payments/status/{orderId}",
+            "methods": [ "GET" ]
+          },
+          "responseOverrides": {
+            "response.body": {
+              "OrderId": "{orderId}",
+              "Status": "Completed"
+            },
+            "response.statusCode": "200",
+            "response.headers.Content-Type": "application/json"      
+          }
+        }
+      }
+    }
+    ```
+## Sample case study
+1) Download or clone the repository from [https://github.com/sonusathyadas/azure-function-proxy-tutorial](https://github.com/sonusathyadas/azure-function-proxy-tutorial).
+2) Open the project in Visual Studio 2019. 
+3) The project contains some sample HttpTrigger functions configured with function proxy.
+4) The function `PostOrder` uses an `Azure ServiceBus Queue`. The function adds order data to the `orders` queue. 
+5) Open Azure portal and create a Service Bus namespace. Then creates an `orders` queue in the service bus namespace.
+6) Update the `local.settings.json` file to include the Service Bus connection string. Update the value of the `servicebus_connection` property. Replace *SERVICEBUS_CONNECTIONSTRING* with your service bus connection string.
+7) You can test the functions and proxies locally.
+8) For publishing the application to Azure function app, right click on the project and select publish. Select the Azure AppService Function App (Windows) to publish.
+9) In the publish window, click on the `Manage Azure App Service Settings` link.
+
+    ![local1](images/local1.png)    
+10) In the dialog box, find the `servicebus_connection` property and click on the `Insert value from local` to copy the local connection string value to remote.
+
+    ![local2](images/local2.png)  
+11) Save the changes and click on the Publish button to deploy the application on Azure function App.
+
