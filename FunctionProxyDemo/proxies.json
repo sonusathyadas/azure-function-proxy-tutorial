@@ -1,0 +1,41 @@
+{
+  "$schema": "http://json.schemastore.org/proxies",
+  "proxies": {
+    "PlaceOrder": {
+      "matchCondition": {
+        "methods": [ "POST" ],
+        "route": "/api/eshop/order"
+      },
+      "backendUri": "%ESHOP_ORDERS_HOST%/api/PostOrder" //ESHOP_ORDERS_HOST defined in application setting (local.settings.json)
+    },
+    "CountriesList": {
+      "matchCondition": {
+        "route": "/api/eshop/utils/countries",
+        "methods": [ "GET" ]
+      },
+      "backendUri": "%ESHOP_UTILS_HOST%/api/GetCountries"
+    },
+    "CountryByCode": {
+      "matchCondition": {
+        "route": "/api/eshop/utils/countries/{code}", //using route parameter that can be passed to backend URL
+        "methods": [ "GET" ]
+      },
+      "backendUri": "%ESHOP_UTILS_HOST%/api/GetCountryByCode/{code}"
+    },
+    //Creating a Mock API where backend is not implemented. Sending a static response using response overrides
+    "PaymentStatus": {
+      "matchCondition": {
+        "route": "/api/eshop/payments/status/{orderId}",
+        "methods": [ "GET" ]
+      },
+      "responseOverrides": {
+        "response.body": {
+          "OrderId": "{orderId}",
+          "Status": "Completed"
+        },
+        "response.statusCode": "200",
+        "response.headers.Content-Type": "application/json"      
+      }
+    }
+  }
+}
